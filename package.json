@@ -10,7 +10,11 @@
     "hunt": "python3 scripts/hunt.py"
   },
   "dependencies": {
-    "astro": "^5.0.0",
-    "@astrojs/mdx": "^4.0.0"
+    "@astrojs/mdx": "^4.0.0",
+    "astro": "^5.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^5.9.3"
   }
 }
