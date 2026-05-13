@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import { path } from '../../lib/path';
 
 export async function getStaticPaths() {
   const vehicles = await getCollection('vehicles');
@@ -33,7 +34,7 @@ const vinRows = vin.length === 17
 
 <Layout title={vehicle.data.name} docId={`NLG-V-${vehicle.id.toUpperCase()}`}>
   <div class="crumb">
-    <a href="/">← garaje</a>
+    <a href={path('/')}>← garaje</a>
   </div>
 
   <div class="flex-between">
@@ -134,7 +135,7 @@ const vinRows = vin.length === 17
         const c = { missing: 0, confirmed: 0, purchased: 0 };
         for (const it of hunt.data.items) c[it.status as keyof typeof c]++;
         return (
-          <a class="hunt-row" href={`/hunts/${hunt.id}/`}>
+          <a class="hunt-row" href={path(`/hunts/${hunt.id}/`)}>
             <span class="h-num tnum">{hunt.data.date.toISOString().slice(0, 10)}</span>
             <span class="h-name">{hunt.data.name}</span>
             <span class="h-date tnum">{hunt.data.items.length} ítem{hunt.data.items.length !== 1 ? 's' : ''}</span>

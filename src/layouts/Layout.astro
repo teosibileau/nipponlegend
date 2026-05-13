@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { path } from '../lib/path';
 
 interface Props {
   title: string;
@@ -24,7 +25,7 @@ const today = new Date().toISOString().slice(0, 10);
   </head>
   <body>
     <header class="page-header">
-      <a href="/" class="brand" style="text-decoration: none;">
+      <a href={path('/')} class="brand" style="text-decoration: none;">
         <span class="brand-name">nipponlegend</span>
         <span class="brand-jp">私 用 整 備 記 録</span>
       </a>

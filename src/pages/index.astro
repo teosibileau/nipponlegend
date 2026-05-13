@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import HuntRow from '../components/HuntRow.astro';
+import { path } from '../lib/path';
 
 const vehicles = await getCollection('vehicles');
 const hunts = await getCollection('hunts');
@@ -47,7 +48,7 @@ const totalVehicles = vehicles.length;
     <section class="vehicle-block">
       <div class="v-head">
         <h3>
-          <a href={`/vehicles/${vehicle.id}/`} style="text-decoration: none;">
+          <a href={path(`/vehicles/${vehicle.id}/`)} style="text-decoration: none;">
             {vehicle.data.name}
           </a>
         </h3>
@@ -67,7 +68,7 @@ const totalVehicles = vehicles.length;
         vh.map((hunt, i) => (
           <HuntRow
             num={String(i + 1).padStart(2, '0')}
-            href={`/hunts/${hunt.id}/`}
+            href={path(`/hunts/${hunt.id}/`)}
             name={hunt.data.name}
             date={hunt.data.date}
             counts={counts(hunt.data.items)}

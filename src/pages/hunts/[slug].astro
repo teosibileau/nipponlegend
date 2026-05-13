@@ -2,6 +2,7 @@
 import { getCollection, getEntry, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PartItem from '../../components/PartItem.astro';
+import { path } from '../../lib/path';
 
 export async function getStaticPaths() {
   const hunts = await getCollection('hunts');
@@ -24,8 +25,8 @@ const itemCount = hunt.data.items.length;
   <div class="crumb">
     {vehicle && (
       <>
-        <a href="/">garaje</a>{' › '}
-        <a href={`/vehicles/${vehicle.id}/`}>{vehicle.data.name}</a>{' › '}
+        <a href={path('/')}>garaje</a>{' › '}
+        <a href={path(`/vehicles/${vehicle.id}/`)}>{vehicle.data.name}</a>{' › '}
       </>
     )}
     <span>esta búsqueda</span>
