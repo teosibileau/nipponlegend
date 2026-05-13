@@ -1,0 +1,152 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { path } from '../../lib/path';
+
+export async function getStaticPaths() {
+  const vehicles = await getCollection('vehicles');
+  return vehicles.map((v) => ({ params: { slug: v.id }, props: { vehicle: v } }));
+}
+
+const { vehicle } = Astro.props;
+const { Content } = await render(vehicle);
+
+const hunts = await getCollection('hunts', (h) => h.data.vehicle === vehicle.id);
+hunts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const vin = vehicle.data.vin ?? '';
+const yearChar = vin.length === 17 ? vin[9] : '';
+const yearCodeMap: Record<string, string> = {
+  Y: '2000', '1': '2001', '2': '2002', '3': '2003', '4': '2004', '5': '2005',
+  '6': '2006', '7': '2007', '8': '2008', '9': '2009', A: '2010', B: '2011',
+};
+const vinRows = vin.length === 17
+  ? [
+      { pos: '1–3', val: vin.slice(0, 3), meaning: 'WMI · fabricante' },
+      { pos: '4–8', val: vin.slice(3, 8), meaning: 'VDS · descriptor del vehículo' },
+      { pos: '9',   val: vin[8],          meaning: 'dígito verificador' },
+      { pos: '10',  val: yearChar,        meaning: `año modelo · ${yearCodeMap[yearChar] ?? '—'}` },
+      { pos: '11',  val: vin[10],         meaning: 'código de planta' },
+      { pos: '12–17', val: vin.slice(11), meaning: 'número de serie' },
+    ]
+  : [];
+---
+
+<Layout title={vehicle.data.name} docId={`NLG-V-${vehicle.id.toUpperCase()}`}>
+  <div class="crumb">
+    <a href={path('/')}>← garaje</a>
+  </div>
+
+  <div class="flex-between">
+    <div>
+      <span class="eyebrow">{vehicle.data.make} · {vehicle.data.year}</span>
+      <h1>{vehicle.data.name}</h1>
+    </div>
+    {vehicle.data.chassis && (
+      <div class="stamp stamp-skew">chasis · {vehicle.data.chassis}</div>
+    )}
+  </div>
+
+  {vin && (
+    <section class="vin-plate mt-4">
+      <div class="flex-between">
+        <span class="label">Número de Identificación Vehicular</span>
+        <span class="vin-code">{vin}</span>
+      </div>
+      {vinRows.length > 0 && (
+        <table class="mt-3">
+          <thead>
+            <tr><th style="width: 5rem;">Posición</th><th style="width: 7rem;">Valor</th><th>Significado</th></tr>
+          </thead>
+          <tbody>
+            {vinRows.map((r) => (
+              <tr>
+                <td>{r.pos}</td>
+                <td><span class="mono">{r.val}</span></td>
+                <td>{r.meaning}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </section>
+  )}
+
+  <div class="section-eyebrow">
+    <span class="num">02</span>
+    <h2>Perfil</h2>
+    <span class="rule-fill"></span>
+  </div>
+
+  <dl class="kv">
+    <dt>Marca / Modelo</dt><dd>{vehicle.data.make} {vehicle.data.model}</dd>
+    {vehicle.data.chassis && (<><dt>Chasis</dt><dd>{vehicle.data.chassis}</dd></>)}
+    {vehicle.data.engineCode && (<><dt>Código motor</dt><dd>{vehicle.data.engineCode}</dd></>)}
+    {vehicle.data.displacement && (<><dt>Cilindrada</dt><dd>{vehicle.data.displacement} L</dd></>)}
+    {vehicle.data.drive && (<><dt>Tracción</dt><dd>{vehicle.data.drive}</dd></>)}
+    {vehicle.data.body && (<><dt>Carrocería</dt><dd>{vehicle.data.body}</dd></>)}
+    <dt>Año modelo</dt><dd>{vehicle.data.year}</dd>
+    <dt>Rango de años</dt><dd>{vehicle.data.yearRange[0]}–{vehicle.data.yearRange[1]}</dd>
+    {vehicle.data.plant && (<><dt>Planta</dt><dd>{vehicle.data.plant}</dd></>)}
+    {vehicle.data.huntOn.length > 0 && (
+      <><dt>Sitios</dt><dd>{vehicle.data.huntOn.join(', ')}</dd></>
+    )}
+  </dl>
+
+  <div class="section-eyebrow">
+    <span class="num">03</span>
+    <h2>Identificación</h2>
+    <span class="rule-fill"></span>
+  </div>
+
+  <article class="prose">
+    <Content />
+  </article>
+
+  {vehicle.data.sources.length > 0 && (
+    <>
+      <div class="section-eyebrow">
+        <span class="num">04</span>
+        <h2>Fuentes</h2>
+        <span class="rule-fill"></span>
+      </div>
+      <div class="sources">
+        {vehicle.data.sources.map((s: any, i: number) => (
+          <div class="source">
+            <span class="source-num tnum">[{String(i + 1).padStart(2, '0')}]</span>
+            <div>
+              <a class="source-title" href={s.url} target="_blank" rel="noopener">{s.title}</a>
+              {s.claim && <div class="source-claim">{s.claim}</div>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  )}
+
+  {hunts.length > 0 && (
+    <>
+      <div class="section-eyebrow">
+        <span class="num">05</span>
+        <h2>Búsquedas</h2>
+        <span class="rule-fill"></span>
+      </div>
+      {hunts.map((hunt) => {
+        const c = { missing: 0, confirmed: 0, purchased: 0 };
+        for (const it of hunt.data.items) c[it.status as keyof typeof c]++;
+        return (
+          <a class="hunt-row" href={path(`/hunts/${hunt.id}/`)}>
+            <span class="h-num tnum">{hunt.data.date.toISOString().slice(0, 10)}</span>
+            <span class="h-name">{hunt.data.name}</span>
+            <span class="h-date tnum">{hunt.data.items.length} ítem{hunt.data.items.length !== 1 ? 's' : ''}</span>
+            <span class="h-pips">
+              {c.missing > 0 && <span class="h-pip missing"><span class="n tnum">{c.missing}</span> falta</span>}
+              {c.confirmed > 0 && <span class="h-pip confirmed"><span class="n tnum">{c.confirmed}</span> confirmado</span>}
+              {c.purchased > 0 && <span class="h-pip purchased"><span class="n tnum">{c.purchased}</span> comprado</span>}
+            </span>
+          </a>
+        );
+      })}
+    </>
+  )}
+</Layout>

@@ -1,0 +1,36 @@
+---
+name: "Nippon Parts"
+baseUrl: "https://nipponpartsweb.com.ar"
+adapter: "nipponpartsweb"
+config:
+  apiPath: "/wp-json/wc/store/v1/products"
+  perPage: 100
+  rateLimitSeconds: 0.4
+  searchOnlyMatchesTitle: true
+---
+
+# Nippon Parts (Argentina)
+
+Sitio argentino de repuestos basado en **WordPress + WooCommerce**, con una Store API pública en `/wp-json/wc/store/v1/products`. Tamaño del catálogo: ~11.500 productos.
+
+## Notas del adapter
+
+- El parámetro `?search=` matchea **solamente contra el título del producto**, no contra la descripción.
+- Paginación vía `?page=N&per_page=100`. Los headers `X-WP-Total` / `X-WP-TotalPages` exponen los totales.
+- Cada producto tiene `name`, `description` (HTML), `sku`, `permalink`, `prices`, `categories`, `brands`, `attributes`, `is_in_stock`.
+- No requiere autenticación.
+
+## Convenciones de los títulos (vendedores argentinos)
+
+Los vendedores listan **año + cilindrada + tipo de tracción** en los títulos, no códigos de chasis (`LN166`, `KZJ95`, etc.). Ejemplos:
+
+- "Brazo Pitman Toyota Hilux 1997-2001 2.8d 4×4 Safety"
+- "Bomba De Agua Toyota Hilux Motor 2.4 2.8 3.0 Diesel Aspirado"
+- "Kit Bieletas Delanteras Toyota Hilux 4×4 4×2 2001-2004"
+
+## Particularidades del vocabulario
+
+- **Cruceta**, no "cruzeta" — escritura RAE estándar.
+- Acentos normalizados en el matcher (`cardán` ≡ `cardan`).
+- **Fuelle homocinética / fuelle triceta** para fundas de junta homocinética / triceta — no "fuelle semieje".
+- **Gemelo elástico** para las gemelas del paquete elástico (shackle bushings).

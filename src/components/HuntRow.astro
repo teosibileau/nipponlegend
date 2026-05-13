@@ -1,0 +1,28 @@
+---
+interface Props {
+  num: string;
+  href: string;
+  name: string;
+  date: Date;
+  counts: { missing: number; confirmed: number; purchased: number };
+}
+const { num, href, name, date, counts } = Astro.props;
+const dateStr = date.toISOString().slice(0, 10);
+---
+
+<a class="hunt-row" href={href}>
+  <span class="h-num tnum">{num}</span>
+  <span class="h-name">{name}</span>
+  <span class="h-date tnum">{dateStr}</span>
+  <span class="h-pips">
+    {counts.missing > 0 && (
+      <span class="h-pip missing"><span class="n tnum">{counts.missing}</span> falta</span>
+    )}
+    {counts.confirmed > 0 && (
+      <span class="h-pip confirmed"><span class="n tnum">{counts.confirmed}</span> confirmado</span>
+    )}
+    {counts.purchased > 0 && (
+      <span class="h-pip purchased"><span class="n tnum">{counts.purchased}</span> comprado</span>
+    )}
+  </span>
+</a>

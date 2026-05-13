@@ -1,0 +1,63 @@
+---
+name: "Toyota Hilux 2001 SR5 D-Cab 4×4"
+vin: "8AJ33LNA3Y9XXXXXX"
+make: "Toyota"
+model: "Hilux"
+year: 2001
+yearRange: [1997, 2005]
+chassis: "LN166"
+engineCode: "3L"
+displacement: "2.8"
+drive: "4x4"
+body: "D-Cab"
+plant: "Toyota Argentina — Zárate, Buenos Aires"
+qualifiers:
+  - ln166
+  - hilux
+  - "3l"
+  - "2.8"
+  - "4x4"
+disqualifiers:
+  - sw4
+  - 1kd
+  - 2kd
+  - 1kz
+  - "5l"
+huntOn:
+  - nipponpartsweb
+sources:
+  - url: "https://www.autodoc.parts/spares/toyota/hilux-pick-up/hilux-vi-pickup-n1/26881-2-8-d-4wd-ln166"
+    title: "AUTODOC — Hilux VI Pickup 2.8 D 4WD LN166"
+    claim: "Confirma el código de chasis LN166 para la variante 6ta generación Hilux 2.8 D 4WD (1997–2005)."
+  - url: "https://en.wikipedia.org/wiki/Toyota_L_engine"
+    title: "Toyota L engine — Wikipedia"
+    claim: "Motor 3L = 2.8 L (2779 cc) diésel atmosférico de inyección indirecta, 88 cv / 65 kW @ 4000 rpm."
+  - url: "https://www.ebay.com/itm/195857182195"
+    title: "eBay — Hilux LN166 LN152 5L 3.0 / 3L 2.8 Diesel air filter"
+    claim: "Listado de repuestos aftermarket diferencia los motores 5L (3.0 L) y 3L (2.8 L) sobre el mismo chasis LN166."
+  - url: "https://yoshiparts.com/"
+    title: "YoshiParts VIN lookup"
+    claim: "La VIN devolvió una variante 3L — confirmando que el código de motor es 3L. Junto con la oblea '2.8 D' de la camioneta, resuelve la ambigüedad entre cilindrada y código de motor."
+  - url: "https://vpic.nhtsa.dot.gov/api/"
+    title: "NHTSA vPIC API"
+    claim: "No devolvió datos — el WMI 8AJ (Toyota Argentina) no está registrado en NHTSA. Esperado, ya que vPIC sólo cubre VINs del mercado estadounidense."
+---
+
+## Resolución del código de motor — "3L vs 2.8 L"
+
+YoshiParts decodificó esta VIN como una variante **3L**. La oblea del título argentino indica **"2.8 D"**. Ambos son correctos — en la nomenclatura Toyota, **3L es el código del motor; 2.8 L es su cilindrada**. El 3L es un diésel de 2779 cc, atmosférico, inyección indirecta: diámetro × carrera 96 × 96 mm, relación de compresión 22.2:1, 88 cv / 65 kW a 4000 rpm.
+
+La misma generación de Hilux puede equipar un motor **5L** — esa es una unidad de **3.0 L**, otro propulsor distinto. Para fines de repuestos, **5L ≠ 3L**. Cualquier publicación que diga "5L" o "3.0 L diésel" no es para esta camioneta.
+
+## Chasis — LN166
+
+Confirmado por el catálogo de AUTODOC, varios listados de repuestos en eBay, y el prefijo `LN` en las posiciones 6–7 de la VIN. La generación N140–N170 (6ta generación Hilux) se produjo en la planta de Toyota Argentina en Zárate desde 1997 hasta 2005. La variante 4×4 diésel doble cabina es **LN166**.
+
+La afirmación de Wikipedia de que la Hilux argentina 2001 era la "serie N200 con motor 5L diésel" contradice todos los catálogos de repuestos consultados — descartada.
+
+## Heurísticas
+
+Las listas `qualifiers` y `disqualifiers` del frontmatter guían el puntaje del matcher contra los títulos y descripciones de las publicaciones:
+
+- **Calificadores** (señales positivas): `ln166`, `hilux`, `3l`, `2.8`, `4x4`
+- **Descalificadores** (señales negativas): `sw4` (variante SUV posterior a 2005), `1kd` / `2kd` / `1kz` (otros motores diésel Toyota), `5l` (el diésel de 3.0 L)

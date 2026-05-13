@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import { path } from '../lib/path';
+
+interface Props {
+  title: string;
+  docId?: string;
+}
+const { title, docId = 'NLG-DOC-001' } = Astro.props;
+const today = new Date().toISOString().slice(0, 10);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · nipponlegend</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Noto+Serif+JP:wght@500&display=swap"
+    />
+  </head>
+  <body>
+    <header class="page-header">
+      <a href={path('/')} class="brand" style="text-decoration: none;">
+        <span class="brand-name">nipponlegend</span>
+        <span class="brand-jp">私 用 整 備 記 録</span>
+      </a>
+      <div></div>
+      <div class="head-meta">
+        <span class="doc-id">{docId}</span>
+        <span>REV. {today}</span>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="page-footer">
+      <span>archivo privado · no redistribuir</span>
+      <span>{docId} · {today}</span>
+    </footer>
+  </body>
+</html>
