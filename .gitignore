@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+
+# matcher caches (regenerated)
+data/catalogs/*.json
+data/runs/*.json
+!data/catalogs/.gitkeep
+!data/runs/.gitkeep
+
+# legacy
+_legacy/

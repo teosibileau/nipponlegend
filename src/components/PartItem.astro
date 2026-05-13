@@ -1,0 +1,94 @@
+---
+import StatusPip from './StatusPip.astro';
+
+interface Candidate {
+  site: string;
+  url: string;
+  title: string;
+  sku?: string | null;
+  score: number;
+  notes?: string[];
+}
+
+interface Props {
+  id: string;
+  num: number;
+  name: string;
+  qty: number;
+  status: 'missing' | 'confirmed' | 'purchased';
+  desc: string;
+  chosen?: Candidate | null;
+  alternates: Candidate[];
+}
+
+const { id, num, name, qty, status, desc, chosen, alternates } = Astro.props;
+
+function clean(title: string): string {
+  return title.replace(/&#215;/g, '×').replace(/&#8211;/g, '–').replace(/&amp;/g, '&');
+}
+
+const winner: Candidate | null = chosen ?? (alternates.length > 0 ? alternates[0] : null);
+const restAlternates: Candidate[] = chosen ? alternates : alternates.slice(1);
+const itemNum = String(num).padStart(2, '0');
+---
+
+<article class="part" id={id}>
+  <div class="part-id">№ {itemNum}</div>
+  <div class="part-body">
+    <header class="part-head">
+      <h3 class="part-name">{name}</h3>
+      {qty > 1 && <span class="part-qty">× {qty}</span>}
+    </header>
+    <p class="part-desc">{desc}</p>
+
+    {winner ? (
+      <div class={`candidate ${chosen ? 'is-winner' : ''}`}>
+        <span class="candidate-tag">{chosen ? 'elegido' : 'mejor coincidencia'}</span>
+        <div class="candidate-body">
+          <a class="candidate-title" href={winner.url} target="_blank" rel="noopener">
+            {clean(winner.title)}
+          </a>
+          <div class="candidate-meta">
+            <span>sitio · {winner.site}</span>
+            {winner.sku && <span>sku · {winner.sku}</span>}
+            <span class="candidate-score">puntaje {winner.score}</span>
+          </div>
+          {winner.notes && winner.notes.length > 0 && (
+            <div class="candidate-notes">{winner.notes.join('  ·  ')}</div>
+          )}
+        </div>
+      </div>
+    ) : (
+      <div class="no-candidates">
+        No encontrado en este catálogo — buscar en otro lado o consultar al vendedor directamente.
+      </div>
+    )}
+
+    {restAlternates.length > 0 && (
+      <details class="alternates">
+        <summary>{restAlternates.length} {restAlternates.length === 1 ? 'alternativa' : 'alternativas'}</summary>
+        {restAlternates.map((c) => (
+          <div class="candidate">
+            <span class="candidate-tag">alt</span>
+            <div class="candidate-body">
+              <a class="candidate-title" href={c.url} target="_blank" rel="noopener">
+                {clean(c.title)}
+              </a>
+              <div class="candidate-meta">
+                <span>sitio · {c.site}</span>
+                {c.sku && <span>sku · {c.sku}</span>}
+                <span class="candidate-score">puntaje {c.score}</span>
+              </div>
+              {c.notes && c.notes.length > 0 && (
+                <div class="candidate-notes">{c.notes.join('  ·  ')}</div>
+              )}
+            </div>
+          </div>
+        ))}
+      </details>
+    )}
+  </div>
+  <div class="part-status">
+    <StatusPip status={status} />
+  </div>
+</article>

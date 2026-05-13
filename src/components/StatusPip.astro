@@ -1,0 +1,14 @@
+---
+interface Props {
+  status: 'missing' | 'confirmed' | 'purchased';
+}
+const { status } = Astro.props;
+
+const LABELS: Record<Props['status'], string> = {
+  missing: 'falta',
+  confirmed: 'confirmado',
+  purchased: 'comprado',
+};
+---
+
+<span class={`pip pip-${status}`}>{LABELS[status]}</span>

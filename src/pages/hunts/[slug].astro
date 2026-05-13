@@ -1,0 +1,76 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import PartItem from '../../components/PartItem.astro';
+
+export async function getStaticPaths() {
+  const hunts = await getCollection('hunts');
+  return hunts.map((h) => ({ params: { slug: h.id }, props: { hunt: h } }));
+}
+
+const { hunt } = Astro.props;
+const { Content } = await render(hunt);
+const vehicle = await getEntry('vehicles', hunt.data.vehicle);
+
+const counts = { missing: 0, confirmed: 0, purchased: 0 };
+for (const it of hunt.data.items) counts[it.status as keyof typeof counts]++;
+
+const dateStr = hunt.data.date.toISOString().slice(0, 10);
+const lastRunStr = hunt.data.lastRun ? hunt.data.lastRun.toISOString().slice(0, 10) : null;
+const itemCount = hunt.data.items.length;
+---
+
+<Layout title={hunt.data.name} docId={`NLG-H-${hunt.id.toUpperCase()}`}>
+  <div class="crumb">
+    {vehicle && (
+      <>
+        <a href="/">garaje</a>{' › '}
+        <a href={`/vehicles/${vehicle.id}/`}>{vehicle.data.name}</a>{' › '}
+      </>
+    )}
+    <span>esta búsqueda</span>
+  </div>
+
+  <div class="flex-between">
+    <div>
+      <span class="eyebrow">Búsqueda · {dateStr}</span>
+      <h1>{hunt.data.name}</h1>
+    </div>
+    <div class="head-meta" style="position: relative; bottom: 0;">
+      {vehicle && <span>vehículo · {vehicle.data.chassis ?? vehicle.data.model}</span>}
+      {lastRunStr && <span>última corrida · {lastRunStr}</span>}
+      <span>{itemCount} ítem{itemCount !== 1 ? 's' : ''}</span>
+    </div>
+  </div>
+
+  <div class="mt-3" style="display: flex; gap: 1.25rem; flex-wrap: wrap;">
+    <span class="h-pip missing"><span class="n tnum">{counts.missing}</span> falta</span>
+    <span class="h-pip confirmed"><span class="n tnum">{counts.confirmed}</span> confirmado</span>
+    <span class="h-pip purchased"><span class="n tnum">{counts.purchased}</span> comprado</span>
+  </div>
+
+  <article class="prose">
+    <Content />
+  </article>
+
+  <div class="section-eyebrow">
+    <span class="num">·</span>
+    <h2>Repuestos</h2>
+    <span class="rule-fill"></span>
+  </div>
+
+  <div class="parts-list">
+    {hunt.data.items.map((item: any, i: number) => (
+      <PartItem
+        id={item.id}
+        num={i + 1}
+        name={item.name}
+        qty={item.qty}
+        status={item.status}
+        desc={item.desc}
+        chosen={item.chosen}
+        alternates={item.alternates}
+      />
+    ))}
+  </div>
+</Layout>

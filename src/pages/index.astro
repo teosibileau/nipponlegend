@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import HuntRow from '../components/HuntRow.astro';
+
+const vehicles = await getCollection('vehicles');
+const hunts = await getCollection('hunts');
+
+function counts(items: any[]) {
+  const c = { missing: 0, confirmed: 0, purchased: 0 };
+  for (const it of items) c[it.status as keyof typeof c]++;
+  return c;
+}
+
+const byVehicle = vehicles
+  .map((v) => {
+    const vehHunts = hunts
+      .filter((h) => h.data.vehicle === v.id)
+      .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+    return { vehicle: v, hunts: vehHunts };
+  })
+  .sort((a, b) => a.vehicle.data.name.localeCompare(b.vehicle.data.name));
+
+const totalHunts = hunts.length;
+const totalVehicles = vehicles.length;
+---
+
+<Layout title="Índice del archivo">
+  <div class="flex-between">
+    <div>
+      <span class="eyebrow">Archivo privado · repuestos de vehículos</span>
+      <h1>Garaje</h1>
+    </div>
+    <div class="head-meta" style="position: relative; bottom: 0;">
+      <span>{totalVehicles} vehículo{totalVehicles !== 1 ? 's' : ''}</span>
+      <span>{totalHunts} búsqueda{totalHunts !== 1 ? 's' : ''} registrada{totalHunts !== 1 ? 's' : ''}</span>
+    </div>
+  </div>
+
+  <div class="section-eyebrow">
+    <span class="num">01</span>
+    <h2>Vehículos en servicio</h2>
+    <span class="rule-fill"></span>
+  </div>
+
+  {byVehicle.map(({ vehicle, hunts: vh }) => (
+    <section class="vehicle-block">
+      <div class="v-head">
+        <h3>
+          <a href={`/vehicles/${vehicle.id}/`} style="text-decoration: none;">
+            {vehicle.data.name}
+          </a>
+        </h3>
+        <div class="v-meta">
+          {vehicle.data.chassis && <span class="stamp stamp-skew">{vehicle.data.chassis}</span>}
+          <span>{vehicle.data.year}</span>
+          {vehicle.data.engineCode && <span>· {vehicle.data.engineCode} ({vehicle.data.displacement} L)</span>}
+          {vehicle.data.drive && <span>· {vehicle.data.drive}</span>}
+        </div>
+      </div>
+
+      {vh.length === 0 ? (
+        <p class="muted" style="font-family: var(--mono); font-size: 0.85rem;">
+          Sin búsquedas registradas todavía.
+        </p>
+      ) : (
+        vh.map((hunt, i) => (
+          <HuntRow
+            num={String(i + 1).padStart(2, '0')}
+            href={`/hunts/${hunt.id}/`}
+            name={hunt.data.name}
+            date={hunt.data.date}
+            counts={counts(hunt.data.items)}
+          />
+        ))
+      )}
+    </section>
+  ))}
+</Layout>
