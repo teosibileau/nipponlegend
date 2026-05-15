@@ -1,0 +1,32 @@
+---
+name: "Spataro Repuestos"
+baseUrl: "https://spatarorepuestos.com"
+adapter: "spataro"
+config:
+  apiPath: "/wp-json/wc/store/v1/products"
+  perPage: 100
+  rateLimitSeconds: 0.4
+---
+
+# Spataro Repuestos (Neuquén)
+
+Distribuidor argentino de repuestos para Toyota basado en **WordPress + WooCommerce** (tema Woodmart). Local físico en San Martín 1567, Neuquén Capital. Catálogo amplio: ~4000 productos para la búsqueda `search=hilux`; ~1583 productos dentro de la taxonomía `Modelo: Hilux`.
+
+## Notas del adapter
+
+- El parámetro `?search=` matchea contra título, descripción y atributos — más amplio que el de `nipponpartsweb`.
+- Paginación: `?page=N&per_page=100`. Headers `X-WP-Total` / `X-WP-TotalPages`.
+- **Atributos estructurados** por producto: `Marca`, `Modelo`, `Año`, `Motor`, `OEM`, `Tipo` (tracción), `Número de pieza`. El adapter los sintetiza en la `description` normalizada para que el matcher genérico los lea como texto, sin necesidad de extender `score_item()`.
+- No requiere autenticación.
+
+## Particularidades de los atributos
+
+- **`Año`** se lista año por año (`["2001", "2002", "2003", "2004"]`). El adapter agrega un `Año range: YYYY-YYYY` sintetizado (mínimo–máximo) para que `extract_year_ranges()` en `hunt.py` haga match.
+- **`Motor`** usa el formato `<código>-<cilindrada>`: `3L-2.8`, `5L-3.0`, `2.5-2KD`, `2.8-1KD`. El matcher captura el código (`3l`) y la cilindrada (`2.8`) por separado.
+- **`OEM`** contiene cross-references al número Toyota original (e.g. `45046-39385`). Útil para verificación manual; el matcher actual no tiene regla de OEM por lo que no entra en el score (pero queda visible en el texto enriquecido).
+- **`Tipo`** = tracción: `4X2`, `4X4`, o ambos.
+- **`Marca`** = fabricante aftermarket (Summit, TRC, Safety, Takama, etc.) — útil como pista de calidad/origen.
+
+## Filtros del frontend (no usados por el adapter)
+
+El frontend acepta `?filter_ano=YYYY&filter_cilindrada=N-N&filter_traccion=4x4` directamente sobre las páginas de modelo (`/modelo/hilux/`). Para LN166 (2001 + 2.8 + 4×4) eso reduce de 1583 a ~200 productos. El adapter prefiere recorrer el catálogo completo vía Store API y dejar que el scorer haga el filtrado — más simple y mantiene una sola ruta para todos los sitios.
