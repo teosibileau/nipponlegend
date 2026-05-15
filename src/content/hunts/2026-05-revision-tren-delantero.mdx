@@ -2,7 +2,7 @@
 name: Mayo 2026 — Revisión del tren delantero
 vehicle: hilux-2001
 date: 2026-05-13
-lastRun: 2026-05-14
+lastRun: 2026-05-15
 items:
 - id: centro-cardan
   name: Centro de Cardán
@@ -120,7 +120,17 @@ items:
 - id: bujes-gemelos
   name: Bujes Gemelos
   qty: 1
-  desc: Bujes del gemelo elástico — pivote del paquete elástico trasero.
+  desc: '"Bujes gemelos" en la lista del mecánico — terminología ambigua: estrictamente refiere a los bujes
+
+    de goma dentro del gemelo elástico trasero (paquete elástico), pero coloquialmente también se usa
+
+    para el gemelo completo (chapa metálica + bujes). En el mercado argentino las dos variantes se
+
+    venden por separado: "bujes de goma para gemelo" (solo las gomas) y "gemelo de elástico" (la chapa
+
+    entera, normalmente con bujes incluidos). Confirmar con el mecánico cuál de las dos quiere.
+
+    '
   searchTerms:
   - gemelo elastico
   - buje gemelo
@@ -300,7 +310,8 @@ items:
   desc: Cardán delantero completo, con reforma.
   searchTerms:
   - cardan delantero
-  - carda delantero
+  - cardan reforma delantero
+  - cardan reforma
   alternates:
   - site: spataro
     url: https://spatarorepuestos.com/producto/cardan-delantero-toyota-hilux-1992-2004-motor-3l-5l/
@@ -744,7 +755,8 @@ items:
       url: https://spatarorepuestos.com/producto/fuelle-semieje-hilux-1992-2004-2-8-3-0-3l-5l-lado-rueda-completo-grasa-y-abrazaderas-toyako/
       sku: '044383501307'
       title: FUELLE SEMIEJE HILUX 1992-2004 2.8-3.0 3L-5L LADO RUEDA COMPLETO GRASA Y ABRAZADERAS TOYAKO
-    note: inferido — fitment explícito 1992-2004 / 2.8-3.0 / 3L-5L / lado rueda; el "5L" descalificador es por co-fitment, no porque el motor sea el incorrecto
+    note: inferido — fitment explícito 1992-2004 / 2.8-3.0 / 3L-5L / lado rueda; el "5L" descalificador es por co-fitment, no porque el motor
+      sea el incorrecto
 - id: brazo-auxiliar
   name: Brazo Auxiliar
   qty: 1
@@ -1069,7 +1081,8 @@ items:
 - id: bieletas
   name: Bieletas
   qty: 2
-  desc: 'Bieletas — sin especificar en la lista del mecánico; inferido como bieletas de la barra estabilizadora dado el contexto del tren delantero. Confirmar con el mecánico.'
+  desc: Bieletas — sin especificar en la lista del mecánico; inferido como bieletas de la barra estabilizadora dado el contexto del tren delantero.
+    Confirmar con el mecánico.
   searchTerms:
   - bieleta
   alternates:
@@ -1175,7 +1188,8 @@ items:
       url: https://spatarorepuestos.com/producto/juego-de-bieletas-barra-estabilizadora-hilux-1992-2004-4x4-2001-2005-3-0-4x2-4x4-taiwan/
       sku: 488193502007X2
       title: JUEGO DE BIELETAS BARRA ESTABILIZADORA HILUX 1992-2004 4X4 -2001-2005 3.0 4×2-4×4 Taiwan
-    note: inferido — juego (2 unidades) que cubre qty 2 del ítem; fitment explícito 1992-2004 4×4 / 2001-2005 3.0; "bieletas" del mecánico interpretado como sway-bar end links (pendiente de confirmar con el mecánico)
+    note: inferido — juego (2 unidades) que cubre qty 2 del ítem; fitment explícito 1992-2004 4×4 / 2001-2005 3.0; "bieletas" del mecánico interpretado
+      como sway-bar end links (pendiente de confirmar con el mecánico)
 - id: extremo-largo
   name: Extremo Largo
   qty: 1
@@ -1295,10 +1309,10 @@ items:
       sku: '454063918505'
       title: EXTREMO LARGO HILUX 4X4 TODAS 1992-2004 4X2 2001-2004 555 Japon
     note: switch al mismo extremo en variante 555 (Sankei) Japón — mismo OEM 45046-39385 / 45045-39385, mejor calidad de marca
-- id: cable-freno-mano
-  name: Cable de Freno de Mano
+- id: cable-freno-mano-principal
+  name: Cable de Freno de Mano (principal)
   qty: 1
-  desc: Cable del freno de mano.
+  desc: Cable principal del freno de mano — desde la palanca dentro del habitáculo al ecualizador/divisor bajo el chasis.
   searchTerms:
   - cable freno mano
   - freno mano
@@ -1336,6 +1350,24 @@ items:
     - +20 motor 3l
     - +10 4x4
     - +5 calificador 'hilux'
+  history:
+  - status: confirmed
+    at: 2026-05-14
+    pick:
+      site: spataro
+      url: https://spatarorepuestos.com/producto/cable-freno-de-mano-hilux-4runner-1996-2001-2-8-3l-4x4-japon/
+      sku: '464103568005'
+      title: CABLE FRENO DE MANO HILUX-4RUNNER 1996-2001 2.8 3L 4X4 Japon
+    note: inferido — fitment explícito 1996-2001 / 2.8 / 3L / 4×4 (todos los descriptores del LN166); variante Japón sobre Nacional y Taiwan
+- id: cable-freno-mano-trasero
+  name: Cable de Freno de Mano (trasero)
+  qty: 2
+  desc: Cable trasero del freno de mano — desde el ecualizador/divisor a cada freno de rueda; uno por lado, dos en total. El SKU "TODAS" del proveedor cubre ambos lados con un único código.
+  searchTerms:
+  - cable freno mano trasero
+  - cable freno mano
+  - freno mano
+  alternates:
   - site: spataro
     url: https://spatarorepuestos.com/producto/cable-de-freno-de-mano-trasero-izq-toyota-hilux-4x2-1992-2001-c-doble-nacional/
     title: CABLE DE FRENO DE MANO TRASERO IZQ TOYOTA HILUX 4X2 1992-2001 C/DOBLE NACIONAL
@@ -1367,18 +1399,18 @@ items:
     - +10 4x4
     - +5 calificador 'hilux'
   - site: spataro
-    url: https://spatarorepuestos.com/producto/cable-de-freno-de-mano-hilux-1994-2004-4x4-2001-2004-todas-trasero-taiwan/
-    title: CABLE DE FRENO DE MANO HILUX 1994-2004 4X4 // 2001-2004 TODAS TRASERO TAIWAN
-    sku: '464203550007'
+    url: https://spatarorepuestos.com/producto/cable-de-freno-de-mano-hilux-1994-2004-4x4-2001-2004-todas-trasero-japon/
+    title: CABLE DE FRENO DE MANO HILUX 1994-2004 4X4 // 2001-2004 TODAS TRASERO JAPON
+    sku: '464203550005'
     score: 30
     notes:
     - +15 año 2001 en rango del título
     - +10 4x4
     - +5 calificador 'hilux'
   - site: spataro
-    url: https://spatarorepuestos.com/producto/cable-de-freno-de-mano-hilux-1994-2004-4x4-2001-2004-todas-trasero-japon/
-    title: CABLE DE FRENO DE MANO HILUX 1994-2004 4X4 // 2001-2004 TODAS TRASERO JAPON
-    sku: '464203550005'
+    url: https://spatarorepuestos.com/producto/cable-de-freno-de-mano-hilux-1994-2004-4x4-2001-2004-todas-trasero-taiwan/
+    title: CABLE DE FRENO DE MANO HILUX 1994-2004 4X4 // 2001-2004 TODAS TRASERO TAIWAN
+    sku: '464203550007'
     score: 30
     notes:
     - +15 año 2001 en rango del título
@@ -1404,13 +1436,13 @@ items:
     - +5 calificador 'hilux'
   history:
   - status: confirmed
-    at: 2026-05-14
+    at: 2026-05-15
     pick:
       site: spataro
-      url: https://spatarorepuestos.com/producto/cable-freno-de-mano-hilux-4runner-1996-2001-2-8-3l-4x4-japon/
-      sku: '464103568005'
-      title: CABLE FRENO DE MANO HILUX-4RUNNER 1996-2001 2.8 3L 4X4 Japon
-    note: inferido — fitment explícito 1996-2001 / 2.8 / 3L / 4×4 (todos los descriptores del LN166); variante Japón sobre Nacional y Taiwan
+      url: https://spatarorepuestos.com/producto/cable-de-freno-de-mano-hilux-1994-2004-4x4-2001-2004-todas-trasero-japon/
+      sku: '464203550005'
+      title: CABLE DE FRENO DE MANO HILUX 1994-2004 4X4 // 2001-2004 TODAS TRASERO JAPON
+    note: inferido — variante Japón sobre Nacional y Taiwan. El SKU "TODAS" del título cubre ambos lados con un único código; comprar 2 unidades (izquierdo + derecho)
 ---
 
 Revisión del tren delantero, dirección y servicio del cardán. Lista de repuestos extraída del presupuesto del mecánico del 2026-05-12. Búsqueda corrida contra `nipponpartsweb.com.ar`.
