@@ -10,6 +10,22 @@ const candidateSchema = z.object({
   notes: z.array(z.string()).default([]),
 });
 
+const pickSchema = z.object({
+  site: z.string(),
+  url: z.string().url(),
+  sku: z.string().nullable().optional(),
+  title: z.string(),
+  score: z.number().optional(),
+  notes: z.array(z.string()).default([]),
+});
+
+const eventSchema = z.object({
+  status: z.enum(['missing', 'confirmed', 'purchased']),
+  at: z.date(),
+  pick: pickSchema.optional(),
+  note: z.string().optional(),
+});
+
 const sites = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/sites' }),
   schema: z.object({
@@ -62,11 +78,10 @@ const hunts = defineCollection({
         id: z.string(),
         name: z.string(),
         qty: z.number().int().default(1),
-        status: z.enum(['missing', 'confirmed', 'purchased']).default('missing'),
         desc: z.string(),
         searchTerms: z.array(z.string()).default([]),
-        chosen: candidateSchema.nullable().default(null),
         alternates: z.array(candidateSchema).default([]),
+        history: z.array(eventSchema).default([]),
       })
     ),
   }),

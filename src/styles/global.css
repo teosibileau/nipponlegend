@@ -573,3 +573,44 @@ footer.page-footer {
 .mt-2 { margin-top: 1rem; }
 .mt-3 { margin-top: 1.5rem; }
 .mt-4 { margin-top: 2rem; }
+
+.timeline {
+  margin-top: 0.85rem;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ink-faint);
+}
+.timeline-entry {
+  display: grid;
+  grid-template-columns: 6.5rem 6rem auto 1fr;
+  gap: 0.85rem;
+  padding: 0.4rem 0;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  border-bottom: 1px dotted var(--ink-faint);
+}
+.timeline-date {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.timeline-status {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.66rem;
+}
+.timeline-pick {
+  font-family: var(--body);
+  font-size: 0.82rem;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 0.5px;
+  text-underline-offset: 3px;
+  word-break: break-all;
+}
+.timeline-pick:hover { color: var(--warning); }
+.timeline-note {
+  grid-column: 4;
+  color: var(--ink-faint);
+  font-style: italic;
+}

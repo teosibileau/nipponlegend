@@ -4,6 +4,10 @@ dist/
 .DS_Store
 *.log
 
+# python caches
+__pycache__/
+*.pyc
+
 # matcher caches (regenerated)
 data/catalogs/*.json
 data/runs/*.json

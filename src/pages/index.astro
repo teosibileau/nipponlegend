@@ -9,7 +9,10 @@ const hunts = await getCollection('hunts');
 
 function counts(items: any[]) {
   const c = { missing: 0, confirmed: 0, purchased: 0 };
-  for (const it of items) c[it.status as keyof typeof c]++;
+  for (const it of items) {
+    const status = (it.history.at(-1)?.status ?? 'missing') as keyof typeof c;
+    c[status]++;
+  }
   return c;
 }
 

@@ -14,7 +14,10 @@ const { Content } = await render(hunt);
 const vehicle = await getEntry('vehicles', hunt.data.vehicle);
 
 const counts = { missing: 0, confirmed: 0, purchased: 0 };
-for (const it of hunt.data.items) counts[it.status as keyof typeof counts]++;
+for (const it of hunt.data.items) {
+  const status = (it.history.at(-1)?.status ?? 'missing') as keyof typeof counts;
+  counts[status]++;
+}
 
 const dateStr = hunt.data.date.toISOString().slice(0, 10);
 const lastRunStr = hunt.data.lastRun ? hunt.data.lastRun.toISOString().slice(0, 10) : null;
@@ -67,10 +70,9 @@ const itemCount = hunt.data.items.length;
         num={i + 1}
         name={item.name}
         qty={item.qty}
-        status={item.status}
         desc={item.desc}
-        chosen={item.chosen}
         alternates={item.alternates}
+        history={item.history}
       />
     ))}
   </div>

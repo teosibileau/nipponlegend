@@ -46,9 +46,31 @@ def read_mdx(path: Path) -> tuple[dict, str]:
     return fm, body
 
 
+_NUMERIC_LOOKING = re.compile(r"^-?\d+(\.\d+)?$")
+
+
+def _str_representer(dumper, data):
+    # PyYAML emits YAML 1.1; Astro's content loader follows 1.2. The two
+    # disagree on numeric-looking strings (esp. leading-zero all-digit
+    # strings like SKU '044833508009'), which the loader would parse as a
+    # number on read-back and fail the string schema. Force-quote anything
+    # that could be ambiguous.
+    if data and _NUMERIC_LOOKING.match(data):
+        return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="'")
+    return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+
+
+class _SafeDumper(yaml.SafeDumper):
+    pass
+
+
+_SafeDumper.add_representer(str, _str_representer)
+
+
 def write_mdx(path: Path, frontmatter: dict, body: str) -> None:
-    fm_text = yaml.safe_dump(
+    fm_text = yaml.dump(
         frontmatter,
+        Dumper=_SafeDumper,
         allow_unicode=True,
         sort_keys=False,
         width=140,
@@ -213,7 +235,7 @@ def fetch_or_load_catalog(adapter, site_slug: str, vehicle: dict, refresh: bool)
     return items
 
 
-def find_candidates(item: dict, catalog: list, vehicle: dict, top: int = 5) -> list[dict]:
+def find_candidates(item: dict, catalog: list, vehicle: dict, top: int = 10) -> list[dict]:
     out: list[dict] = []
     search_terms = item.get("searchTerms") or []
     for p in catalog:
@@ -230,8 +252,15 @@ def find_candidates(item: dict, catalog: list, vehicle: dict, top: int = 5) -> l
             "score": s,
             "notes": notes,
         })
-    out.sort(key=lambda c: -c["score"])
-    return out[:top]
+    # Carry-forward: merge existing alternates by URL. A URL still in the live
+    # catalog gets a fresh score (out wins on dedupe); a URL no longer present
+    # keeps its last-known score and survives if it still beats the cull.
+    by_url: dict[str, dict] = {c["url"]: c for c in out}
+    for e in (item.get("alternates") or []):
+        by_url.setdefault(e["url"], e)
+    merged = list(by_url.values())
+    merged.sort(key=lambda c: -c["score"])
+    return merged[:top]
 
 
 def run_hunt(hunt_slug: str, refresh: bool = False) -> None:

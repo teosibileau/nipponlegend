@@ -10,25 +10,56 @@ interface Candidate {
   notes?: string[];
 }
 
+type Status = 'missing' | 'confirmed' | 'purchased';
+
+interface Pick {
+  site: string;
+  url: string;
+  sku?: string | null;
+  title: string;
+  score?: number;
+  notes?: string[];
+}
+
+interface Event {
+  status: Status;
+  at: Date;
+  pick?: Pick;
+  note?: string;
+}
+
 interface Props {
   id: string;
   num: number;
   name: string;
   qty: number;
-  status: 'missing' | 'confirmed' | 'purchased';
   desc: string;
-  chosen?: Candidate | null;
   alternates: Candidate[];
+  history: Event[];
 }
 
-const { id, num, name, qty, status, desc, chosen, alternates } = Astro.props;
+const { id, num, name, qty, desc, alternates, history } = Astro.props;
 
 function clean(title: string): string {
   return title.replace(/&#215;/g, '×').replace(/&#8211;/g, '–').replace(/&amp;/g, '&');
 }
 
-const winner: Candidate | null = chosen ?? (alternates.length > 0 ? alternates[0] : null);
-const restAlternates: Candidate[] = chosen ? alternates : alternates.slice(1);
+function formatDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
+function pickLabel(p: Pick): string {
+  return p.sku ?? new URL(p.url).hostname.replace(/^www\./, '');
+}
+
+const lastEvent: Event | undefined = history.at(-1);
+const status: Status = lastEvent?.status ?? 'missing';
+const pick: Pick | undefined = lastEvent?.pick;
+const isPicked = !!pick;
+
+// Winner card prefers the picked candidate from the last event; otherwise the top alternate.
+const winner: Pick | Candidate | null = pick ?? (alternates.length > 0 ? alternates[0] : null);
+const restAlternates: Candidate[] = isPicked ? alternates : alternates.slice(1);
 const itemNum = String(num).padStart(2, '0');
 ---
 
@@ -42,8 +73,8 @@ const itemNum = String(num).padStart(2, '0');
     <p class="part-desc">{desc}</p>
 
     {winner ? (
-      <div class={`candidate ${chosen ? 'is-winner' : ''}`}>
-        <span class="candidate-tag">{chosen ? 'elegido' : 'mejor coincidencia'}</span>
+      <div class={`candidate ${isPicked ? 'is-winner' : ''}`}>
+        <span class="candidate-tag">{isPicked ? 'elegido' : 'mejor coincidencia'}</span>
         <div class="candidate-body">
           <a class="candidate-title" href={winner.url} target="_blank" rel="noopener">
             {clean(winner.title)}
@@ -51,7 +82,9 @@ const itemNum = String(num).padStart(2, '0');
           <div class="candidate-meta">
             <span>sitio · {winner.site}</span>
             {winner.sku && <span>sku · {winner.sku}</span>}
-            <span class="candidate-score">puntaje {winner.score}</span>
+            {winner.score !== undefined && (
+              <span class="candidate-score">puntaje {winner.score}</span>
+            )}
           </div>
           {winner.notes && winner.notes.length > 0 && (
             <div class="candidate-notes">{winner.notes.join('  ·  ')}</div>
@@ -86,6 +119,25 @@ const itemNum = String(num).padStart(2, '0');
           </div>
         ))}
       </details>
+    )}
+
+    {history.length > 0 && (
+      <ol class="timeline">
+        {history.map((ev) => (
+          <li class="timeline-entry">
+            <span class="timeline-date">{formatDate(ev.at)}</span>
+            <span class={`timeline-status pip-${ev.status}`}>
+              {ev.status === 'missing' ? 'falta' : ev.status === 'confirmed' ? 'confirmado' : 'comprado'}
+            </span>
+            {ev.pick && (
+              <a class="timeline-pick" href={ev.pick.url} target="_blank" rel="noopener">
+                {pickLabel(ev.pick)}
+              </a>
+            )}
+            {ev.note && <span class="timeline-note">{ev.note}</span>}
+          </li>
+        ))}
+      </ol>
     )}
   </div>
   <div class="part-status">
