@@ -63,7 +63,7 @@ const restAlternates: Candidate[] = isPicked ? alternates : alternates.slice(1);
 const itemNum = String(num).padStart(2, '0');
 ---
 
-<article class="part" id={id}>
+<article class={`part ${status === 'purchased' ? 'is-purchased' : ''}`} id={id}>
   <div class="part-id">№ {itemNum}</div>
   <div class="part-body">
     <header class="part-head">
