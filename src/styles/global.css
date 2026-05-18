@@ -372,6 +372,12 @@ hr.rule-ink { border: 0; border-top: var(--rule-thick); margin: 2.5rem 0; }
   padding: 1.75rem 0;
   border-bottom: var(--hairline);
 }
+.part.is-purchased {
+  background: rgba(61, 90, 76, 0.06);
+  box-shadow: inset 3px 0 0 var(--confirmed);
+  margin: 0 -1.25rem;
+  padding: 1.75rem 1.25rem;
+}
 .part-id {
   font-family: var(--mono);
   font-size: 0.7rem;

@@ -80,6 +80,7 @@ const hunts = defineCollection({
         qty: z.number().int().default(1),
         desc: z.string(),
         searchTerms: z.array(z.string()).default([]),
+        excludeTitlePrefixes: z.array(z.string()).default([]),
         alternates: z.array(candidateSchema).default([]),
         history: z.array(eventSchema).default([]),
       })

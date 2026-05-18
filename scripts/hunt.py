@@ -238,6 +238,7 @@ def fetch_or_load_catalog(adapter, site_slug: str, vehicle: dict, refresh: bool)
 def find_candidates(item: dict, catalog: list, vehicle: dict, top: int = 10) -> list[dict]:
     out: list[dict] = []
     search_terms = item.get("searchTerms") or []
+    exclude_prefixes = [norm(p) for p in (item.get("excludeTitlePrefixes") or [])]
     for p in catalog:
         nm = norm(p["name"])
         matched = [t for t in search_terms if term_matches(t, nm)]
@@ -259,6 +260,11 @@ def find_candidates(item: dict, catalog: list, vehicle: dict, top: int = 10) -> 
     for e in (item.get("alternates") or []):
         by_url.setdefault(e["url"], e)
     merged = list(by_url.values())
+    if exclude_prefixes:
+        merged = [
+            c for c in merged
+            if not any(norm(c["title"]).startswith(pre) for pre in exclude_prefixes)
+        ]
     merged.sort(key=lambda c: -c["score"])
     return merged[:top]
 

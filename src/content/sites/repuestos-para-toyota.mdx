@@ -1,0 +1,25 @@
+---
+name: "Repuestos para Toyota"
+baseUrl: "https://repuestosparatoyota.com.ar"
+adapter: "repuestos_para_toyota"
+config:
+  apiPath: "/wp-json/wc/store/v1/products"
+  perPage: 100
+  rateLimitSeconds: 0.4
+---
+
+# Repuestos para Toyota (CABA)
+
+Distribuidor argentino con marca comercial **Autopartes Primera**. Local físico en Warnes 1305, CABA. Catálogo de ~8.000 productos basado en **WordPress + WooCommerce**, expuesto vía la Store API `/wp-json/wc/store/v1/products`.
+
+## Notas del adapter
+
+- Estructuralmente idéntico al de `nipponpartsweb`: mismo shape de respuesta, misma paginación con headers `X-WP-Total` / `X-WP-TotalPages`.
+- El parámetro `?search=` matchea contra título y campos indexados por WooCommerce.
+- Cada producto tiene `name`, `description` (HTML), `sku`, `permalink`, `prices`, `is_in_stock`.
+- **`attributes[]` está vacío** en todos los productos muestreados — toda la metadata vive en el título y la descripción. No hay nada estructurado para enriquecer.
+- No requiere autenticación.
+
+## Cobertura para LN166
+
+Tienen stock explícito de la generación 1997–2005 — espejos, ruedas de mando, bujes de gemelo, conmutadores de ventanilla para 1998–2004 4×4. El catálogo también cubre Hilux N300 / SW4 más nuevas, así que el scorer tiene que descartar los modelos posteriores como ya hace con los otros dos sitios.
